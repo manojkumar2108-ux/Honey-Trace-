@@ -1,0 +1,28 @@
+HONEYTRACE PROTOTYPE SUBMIT CHECKLIST
+
+[ ] Run the project with RUN_LOCAL.bat or VS Code Live Server.
+[ ] Open index.html, not app(5).js.
+[ ] Home page has no QR generator.
+[ ] Login -> Seller -> Register -> email verification -> Login works.
+[ ] Login -> Buyer -> Register -> email verification -> Login works.
+[ ] Login -> Beekeeper -> Register -> email verification -> Login works.
+[ ] Logged-in dashboard shows the registered profile name.
+[ ] Role-specific profile details save successfully.
+[ ] Download My Data (Excel) creates an .xlsx file.
+[ ] Seller can create a honey batch.
+[ ] Seller dashboard generates the batch QR.
+[ ] Download QR and Print QR work.
+[ ] QR verification page loads from the generated QR URL.
+[ ] Verification shows the stored hash and tamper status.
+[ ] AI assistant opens without breaking the page.
+[ ] Logout clears the session and returns to the home page.
+[ ] Browser page does NOT display raw JavaScript text.
+
+QUICK FIX VERIFICATION
+[ ] Supabase live grants applied for Seller/Beekeeper profile, Honey Batch and IoT read tables.
+[ ] Seller profile Save Profile Details works after login.
+[ ] Seller Generate Honey Batch & QR creates a row and QR.
+[ ] QR points to this page with ?verify=<batch-id>.
+[ ] Download QR downloads PNG.
+[ ] Download My Data (Excel) downloads XLSX.
+[ ] Home page does not show a QR generator.

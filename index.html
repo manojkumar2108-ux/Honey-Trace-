@@ -1,0 +1,2986 @@
+
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>HoneyTrace | Blockchain Honey Traceability</title>
+<!-- QR CODE LIBRARY -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+<script src="supabase-config.js"></script>
+<style>
+
+/* =========================
+   GLOBAL
+========================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+html{
+    scroll-behavior:smooth;
+}
+
+body{
+    background:#07120d;
+    color:white;
+}
+
+button{
+    cursor:pointer;
+}
+
+/* =========================
+   NAVBAR
+========================= */
+
+nav{
+    height:72px;
+    background:#0c2017;
+    border-bottom:1px solid #294638;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:0 6%;
+
+    position:sticky;
+    top:0;
+    z-index:100;
+}
+
+.logo{
+    font-size:25px;
+    font-weight:bold;
+    color:#f5c542;
+}
+
+.logo span{
+    color:white;
+}
+
+nav ul{
+    list-style:none;
+    display:flex;
+    gap:28px;
+}
+
+nav ul li{
+    color:#b9c8c0;
+    cursor:pointer;
+}
+
+nav ul li:hover{
+    color:#f5c542;
+}
+
+.nav-buttons{
+    display:flex;
+    gap:8px;
+}
+
+.nav-btn{
+    padding:10px 15px;
+    border-radius:8px;
+    font-weight:bold;
+    border:1px solid #f5c542;
+}
+
+.login-btn{
+    background:#f5c542;
+    color:#111;
+}
+
+.beekeeper-btn{
+    background:transparent;
+    color:#f5c542;
+}
+
+/* =========================
+   HERO
+========================= */
+
+.hero{
+
+    min-height:650px;
+
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+
+    padding:80px 8%;
+
+    background:
+    radial-gradient(
+        circle at 80% 30%,
+        #354d17,
+        transparent 30%
+    ),
+    linear-gradient(
+        135deg,
+        #07120d,
+        #10251b
+    );
+}
+
+.hero-content{
+    max-width:620px;
+}
+
+.hero h1{
+    font-size:58px;
+    line-height:1.1;
+    margin-bottom:20px;
+}
+
+.hero h1 span{
+    color:#f5c542;
+}
+
+.hero p{
+    color:#b7c6bd;
+    font-size:18px;
+    line-height:1.7;
+    margin-bottom:30px;
+}
+
+.hero-buttons{
+    display:flex;
+    gap:15px;
+}
+
+.main-btn{
+    padding:14px 25px;
+    border-radius:10px;
+    border:none;
+    font-weight:bold;
+}
+
+.yellow{
+    background:#f5c542;
+    color:#111;
+}
+
+.outline{
+    background:transparent;
+    color:#f5c542;
+    border:1px solid #f5c542;
+}
+
+.honey{
+
+    width:300px;
+    height:300px;
+
+    border-radius:50%;
+
+    background:#f5c542;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:130px;
+
+    box-shadow:0 0 80px #f5c54255;
+
+    animation:float 3s ease-in-out infinite;
+}
+
+@keyframes float{
+
+    0%,100%{
+        transform:translateY(0);
+    }
+
+    50%{
+        transform:translateY(-20px);
+    }
+
+}
+
+/* =========================
+   SECTION
+========================= */
+
+section{
+    padding:80px 8%;
+}
+
+.section-title{
+    text-align:center;
+    margin-bottom:45px;
+}
+
+.section-title h2{
+    font-size:38px;
+}
+
+.section-title span{
+    color:#f5c542;
+}
+
+.section-title p{
+    color:#899b91;
+    margin-top:10px;
+}
+
+/* =========================
+   FEATURES
+========================= */
+
+.features{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(4,1fr);
+
+    gap:20px;
+}
+
+.feature-card{
+
+    background:#10231a;
+
+    padding:30px;
+
+    border-radius:18px;
+
+    border:1px solid #294638;
+
+    transition:.3s;
+}
+
+.feature-card:hover{
+
+    transform:translateY(-8px);
+
+    border-color:#f5c542;
+}
+
+.feature-icon{
+    font-size:42px;
+    margin-bottom:18px;
+}
+
+.feature-card h3{
+    margin-bottom:10px;
+}
+
+.feature-card p{
+    color:#9bacA2;
+    line-height:1.6;
+}
+
+/* =========================
+   DASHBOARD
+========================= */
+
+.dashboard{
+    background:#0a1812;
+}
+
+.stats{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(4,1fr);
+
+    gap:20px;
+}
+
+.stat{
+
+    background:#12271d;
+
+    padding:25px;
+
+    border-radius:15px;
+
+    border-left:4px solid #f5c542;
+}
+
+.stat p{
+    color:#9cacA3;
+}
+
+.stat h2{
+    color:#f5c542;
+    margin-top:10px;
+}
+
+/* =========================
+   TABLE
+========================= */
+
+.table-box{
+
+    margin-top:30px;
+
+    background:#10231a;
+
+    border-radius:15px;
+
+    overflow:auto;
+}
+
+table{
+
+    width:100%;
+
+    border-collapse:collapse;
+
+    min-width:600px;
+}
+
+th,td{
+
+    padding:17px;
+
+    text-align:left;
+
+    border-bottom:1px solid #294638;
+}
+
+th{
+    color:#f5c542;
+}
+
+.verified{
+    color:#6ee7a0;
+}
+
+/* =========================
+   TRACEABILITY
+========================= */
+
+.timeline{
+
+    max-width:800px;
+
+    margin:auto;
+}
+
+.timeline-step{
+
+    display:flex;
+
+    gap:20px;
+
+    margin-bottom:30px;
+}
+
+.timeline-number{
+
+    min-width:50px;
+
+    height:50px;
+
+    border-radius:50%;
+
+    background:#f5c542;
+
+    color:#111;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-weight:bold;
+}
+
+.timeline-content{
+
+    width:100%;
+
+    background:#10231a;
+
+    padding:20px;
+
+    border-radius:12px;
+}
+
+.timeline-content small{
+    color:#7f9589;
+}
+
+/* =========================
+   QR SECTION
+========================= */
+
+.qr-section{
+
+    text-align:center;
+
+    background:#10231a;
+}
+
+#qrcode{
+
+    width:220px;
+
+    min-height:220px;
+
+    margin:30px auto;
+
+    padding:10px;
+
+    background:white;
+
+    border-radius:15px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+}
+
+#qrcode img{
+    margin:auto;
+}
+
+.qr-info{
+    color:#9cacA3;
+    margin:10px;
+}
+
+/* =========================
+   MODAL
+========================= */
+
+.modal{
+
+    display:none;
+
+    position:fixed;
+
+    inset:0;
+
+    z-index:1000;
+
+    background:#000b;
+
+    backdrop-filter:blur(8px);
+
+    justify-content:center;
+
+    align-items:center;
+
+    padding:20px;
+}
+
+.modal-box{
+
+    width:450px;
+
+    max-width:100%;
+
+    max-height:90vh;
+
+    overflow:auto;
+
+    background:#10231a;
+
+    border:1px solid #f5c542;
+
+    border-radius:20px;
+
+    padding:32px;
+
+    box-shadow:0 0 60px #000;
+}
+
+.close{
+
+    float:right;
+
+    font-size:28px;
+
+    color:#aaa;
+
+    cursor:pointer;
+}
+
+.close:hover{
+    color:#f5c542;
+}
+
+.modal-title{
+
+    text-align:center;
+
+    margin-bottom:25px;
+}
+
+.modal-title h2{
+    color:#f5c542;
+    margin-bottom:8px;
+}
+
+.modal-title p{
+    color:#8fa197;
+}
+
+/* =========================
+   ROLE SELECTION
+========================= */
+
+.role-options{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(2,1fr);
+
+    gap:15px;
+}
+
+.role-card{
+
+    background:#091711;
+
+    border:1px solid #294638;
+
+    padding:25px 15px;
+
+    border-radius:15px;
+
+    text-align:center;
+
+    transition:.3s;
+}
+
+.role-card:hover{
+
+    border-color:#f5c542;
+
+    transform:translateY(-5px);
+}
+
+.role-icon{
+    font-size:45px;
+    margin-bottom:12px;
+}
+
+.role-card h3{
+    margin-bottom:7px;
+}
+
+.role-card p{
+    color:#7f9589;
+    font-size:13px;
+}
+
+/* =========================
+   FORMS
+========================= */
+
+.form-group{
+    margin-bottom:17px;
+}
+
+.form-group label{
+
+    display:block;
+
+    margin-bottom:7px;
+
+    color:#c5d2cb;
+
+    font-size:14px;
+}
+
+.form-group input,
+.form-group select{
+
+    width:100%;
+
+    padding:13px;
+
+    background:#07120d;
+
+    border:1px solid #365545;
+
+    border-radius:8px;
+
+    color:white;
+
+    outline:none;
+}
+
+.form-group input:focus,
+.form-group select:focus{
+    border-color:#f5c542;
+}
+
+.form-submit{
+
+    width:100%;
+
+    padding:14px;
+
+    border:none;
+
+    border-radius:9px;
+
+    background:#f5c542;
+
+    color:#111;
+
+    font-weight:bold;
+
+    margin-top:5px;
+}
+
+.switch-text{
+
+    text-align:center;
+
+    margin-top:18px;
+
+    color:#879990;
+}
+
+.switch-text span{
+
+    color:#f5c542;
+
+    cursor:pointer;
+
+    font-weight:bold;
+}
+
+.back{
+
+    color:#f5c542;
+
+    cursor:pointer;
+
+    margin-bottom:18px;
+
+    display:inline-block;
+}
+
+.role-name{
+    color:#f5c542;
+}
+
+/* =========================
+   USER DASHBOARD
+========================= */
+
+.user-dashboard{
+
+    display:none;
+
+    min-height:100vh;
+
+    background:#08130f;
+
+    padding:50px 8%;
+}
+
+.user-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:35px;
+}
+
+.user-header h1{
+    color:#f5c542;
+}
+
+.logout{
+
+    padding:10px 20px;
+
+    background:transparent;
+
+    color:#f5c542;
+
+    border:1px solid #f5c542;
+
+    border-radius:8px;
+}
+
+.user-grid{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(3,1fr);
+
+    gap:20px;
+}
+
+.user-card{
+
+    background:#10231a;
+
+    border:1px solid #294638;
+
+    border-radius:15px;
+
+    padding:25px;
+}
+
+.user-card h2{
+    color:#f5c542;
+    margin-bottom:15px;
+}
+
+.user-card p{
+    color:#a2b1a9;
+    line-height:1.7;
+}
+
+/* =========================
+   SELLER HONEY FORM
+========================= */
+
+.honey-form{
+
+    max-width:650px;
+
+    margin:30px auto;
+
+    background:#10231a;
+
+    padding:30px;
+
+    border-radius:18px;
+
+    border:1px solid #294638;
+}
+
+/* =========================
+   VERIFICATION
+========================= */
+
+.verification{
+
+    display:none;
+
+    min-height:100vh;
+
+    padding:50px 8%;
+
+    background:
+    linear-gradient(
+        135deg,
+        #07120d,
+        #10251b
+    );
+}
+
+.verify-container{
+
+    max-width:850px;
+
+    margin:auto;
+}
+
+.verify-header{
+
+    text-align:center;
+
+    margin-bottom:30px;
+}
+
+.verify-logo{
+
+    color:#f5c542;
+
+    font-size:30px;
+
+    font-weight:bold;
+}
+
+.verify-status{
+
+    display:inline-block;
+
+    margin-top:15px;
+
+    padding:10px 20px;
+
+    border-radius:30px;
+
+    background:#0d3020;
+
+    border:1px solid #36c77a;
+
+    color:#6ee7a0;
+}
+
+.verify-card{
+
+    background:#10231a;
+
+    border:1px solid #294638;
+
+    border-radius:18px;
+
+    padding:28px;
+
+    margin-bottom:20px;
+}
+
+.verify-card h2{
+
+    color:#f5c542;
+
+    margin-bottom:20px;
+}
+
+.details-grid{
+
+    display:grid;
+
+    grid-template-columns:
+    repeat(2,1fr);
+
+    gap:15px;
+}
+
+.detail-box{
+
+    background:#091711;
+
+    border:1px solid #223c2e;
+
+    padding:15px;
+
+    border-radius:10px;
+}
+
+.detail-box label{
+
+    display:block;
+
+    color:#71877b;
+
+    font-size:13px;
+
+    margin-bottom:6px;
+}
+
+.detail-box strong{
+    color:white;
+}
+
+.seller-info{
+
+    display:flex;
+
+    gap:18px;
+
+    align-items:center;
+
+    margin-bottom:20px;
+}
+
+.seller-avatar{
+
+    width:65px;
+
+    height:65px;
+
+    background:#f5c542;
+
+    border-radius:50%;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    font-size:30px;
+}
+
+.blockchain-box{
+
+    background:#08130f;
+
+    padding:18px;
+
+    border-radius:10px;
+
+    word-break:break-all;
+}
+
+.hash{
+    color:#f5c542;
+}
+
+/* =========================
+   FOOTER
+========================= */
+
+footer{
+
+    text-align:center;
+
+    padding:30px;
+
+    background:#06100c;
+
+    color:#72867a;
+}
+
+/* =========================
+   RESPONSIVE
+========================= */
+
+@media(max-width:900px){
+
+    .features,
+    .stats,
+    .user-grid{
+
+        grid-template-columns:
+        repeat(2,1fr);
+    }
+
+    .hero{
+
+        flex-direction:column;
+
+        gap:50px;
+
+        text-align:center;
+    }
+
+    nav ul{
+        display:none;
+    }
+}
+
+@media(max-width:600px){
+
+    .features,
+    .stats,
+    .user-grid,
+    .details-grid{
+
+        grid-template-columns:1fr;
+    }
+
+    .hero h1{
+        font-size:40px;
+    }
+
+    .honey{
+
+        width:220px;
+        height:220px;
+
+        font-size:90px;
+    }
+
+    .role-options{
+        grid-template-columns:1fr;
+    }
+
+    .nav-buttons{
+        gap:4px;
+    }
+
+    .nav-btn{
+        padding:8px;
+        font-size:11px;
+    }
+}
+
+
+/* HoneyTrace AI Assistant: additive styles only */
+#aiAssistantButton{position:fixed;right:22px;bottom:22px;z-index:9999;border:0;border-radius:50%;width:62px;height:62px;background:#f5c542;color:#111;font-size:26px;cursor:pointer;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+#aiAssistantPanel{display:none;position:fixed;right:22px;bottom:95px;width:min(390px,calc(100vw - 30px));height:560px;z-index:9998;background:#101b22;border:1px solid rgba(245,197,66,.35);border-radius:18px;box-shadow:0 20px 60px rgba(0,0,0,.4);overflow:hidden;color:#eef5f1}
+.ai-head{padding:16px 18px;background:#17252d;display:flex;justify-content:space-between;align-items:center}.ai-head strong{color:#f5c542}.ai-close{background:none;border:0;color:#fff;font-size:22px;cursor:pointer}.ai-body{height:420px;overflow:auto;padding:14px}.ai-msg{padding:10px 12px;border-radius:12px;margin:8px 0;line-height:1.45;white-space:pre-wrap}.ai-user{background:#2b3941;margin-left:35px}.ai-bot{background:#183126;margin-right:20px}.ai-foot{padding:12px;display:flex;gap:8px;background:#17252d}.ai-foot input{flex:1;padding:11px 12px;border-radius:9px;border:1px solid #365545;background:#07120d;color:#fff;outline:none}.ai-foot button{padding:11px 15px;border:0;border-radius:9px;background:#f5c542;color:#111;font-weight:bold;cursor:pointer}.ai-status{font-size:12px;color:#8fa197;margin-top:4px}
+</style></head>
+<body>
+<!-- =====================================================
+     MAIN WEBSITE
+===================================================== -->
+<div id="mainWebsite">
+<!-- ================= NAVBAR ================= -->
+<nav>
+<div class="logo">
+        🍯 Honey<span>Trace</span>
+</div>
+<ul>
+<li onclick="scrollToSection('home')">
+            Home
+        </li>
+<li onclick="scrollToSection('features')">
+            Features
+        </li>
+<li onclick="scrollToSection('dashboard')">
+            Dashboard
+        </li>
+<li onclick="scrollToSection('trace')">
+            Traceability
+        </li>
+</ul>
+<div class="nav-buttons">
+<button class="nav-btn beekeeper-btn" onclick="openLogin('Beekeeper')">
+
+            🐝 Beekeeper
+
+        </button>
+<button class="nav-btn login-btn" onclick="openRoleSelection()">
+
+            🔐 Login
+
+        </button>
+</div>
+</nav>
+<!-- ================= HERO ================= -->
+<section class="hero" id="home">
+<div class="hero-content">
+<h1>
+
+            Smart
+            <span>Honey</span>
+<br/>
+
+            Traceability
+
+        </h1>
+<p>
+
+            A blockchain-based system for transparent
+            honey traceability and smart beekeeping
+            management.
+
+            Track every step from beehive to consumer.
+
+        </p>
+<div class="hero-buttons">
+<button class="main-btn yellow" onclick="scrollToSection('dashboard')">
+
+                Explore Dashboard
+
+            </button>
+<button class="main-btn outline" onclick="scrollToSection('trace')">
+
+                Track Honey
+
+            </button>
+</div>
+</div>
+<div class="honey">
+
+        🍯
+
+    </div>
+</section>
+<!-- ================= FEATURES ================= -->
+<section id="features">
+<div class="section-title">
+<h2>
+            Powerful
+            <span>Features</span>
+</h2>
+<p>
+            Smart technology for the honey supply chain
+        </p>
+</div>
+<div class="features">
+<div class="feature-card">
+<div class="feature-icon">
+                🐝
+            </div>
+<h3>
+                Smart Beekeeping
+            </h3>
+<p>
+                Manage beehives, production,
+                bee health, temperature and humidity.
+            </p>
+</div>
+<div class="feature-card">
+<div class="feature-icon">
+                🔗
+            </div>
+<h3>
+                Blockchain
+            </h3>
+<p>
+                Securely record honey production
+                and traceability information.
+            </p>
+</div>
+<div class="feature-card">
+<div class="feature-icon">
+                🧪
+            </div>
+<h3>
+                Quality Testing
+            </h3>
+<p>
+                Store honey quality parameters
+                and verification status.
+            </p>
+</div>
+<div class="feature-card" style="display:none;">
+<div class="feature-icon">
+                📱
+            </div>
+<h3>
+                QR Traceability
+            </h3>
+<p>
+                Scan a QR code to see the complete
+                journey of the honey.
+            </p>
+</div>
+</div>
+</section>
+<!-- ================= DASHBOARD ================= -->
+<section class="dashboard" id="dashboard">
+<div class="section-title">
+<h2>
+            Beekeeper
+            <span>Dashboard</span>
+</h2>
+</div>
+<div class="stats">
+<div class="stat">
+<p>
+                🐝 Total Hives
+            </p>
+<h2>
+                24
+            </h2>
+</div>
+<div class="stat">
+<p>
+                🍯 Honey Produced
+            </p>
+<h2>
+                185 KG
+            </h2>
+</div>
+<div class="stat">
+<p>
+                📦 Active Batches
+            </p>
+<h2>
+                12
+            </h2>
+</div>
+<div class="stat">
+<p>
+                🧪 Pending Tests
+            </p>
+<h2>
+                03
+            </h2>
+</div>
+</div>
+<div class="table-box">
+<table>
+<tr>
+<th>
+                    Batch ID
+                </th>
+<th>
+                    Honey
+                </th>
+<th>
+                    Quantity
+                </th>
+<th>
+                    Status
+                </th>
+</tr><tbody id="batchTableBody"></tbody></table>
+</div>
+</section>
+<!-- ================= TRACEABILITY ================= -->
+<section id="trace">
+<div class="section-title">
+<h2>
+            Honey
+            <span>Journey</span>
+</h2>
+<p>
+            From beehive to consumer
+        </p>
+</div>
+<div class="timeline">
+<div class="timeline-step">
+<div class="timeline-number">
+                1
+            </div>
+<div class="timeline-content">
+<h3>
+                    🐝 Beehive Registered
+                </h3>
+<small>
+                    Hive ID: HV-1024
+                </small>
+<p>
+                    Erode, Tamil Nadu
+                </p>
+</div>
+</div>
+<div class="timeline-step">
+<div class="timeline-number">
+                2
+            </div>
+<div class="timeline-content">
+<h3>
+                    🍯 Honey Harvested
+                </h3>
+<small>
+                    Batch: HNY-2026-001
+                </small>
+<p>
+                    Quantity: 25 KG
+                </p>
+</div>
+</div>
+<div class="timeline-step">
+<div class="timeline-number">
+                3
+            </div>
+<div class="timeline-content">
+<h3>
+                    🧪 Quality Tested
+                </h3>
+<small>
+                    Moisture: 17.2%
+                </small>
+<p>
+                    Purity: 98% — Verified
+                </p>
+</div>
+</div>
+<div class="timeline-step">
+<div class="timeline-number">
+                4
+            </div>
+<div class="timeline-content">
+<h3>
+                    🔗 Blockchain Registered
+                </h3>
+<small>
+                    Transaction recorded
+                </small>
+<p>
+                    Blockchain verified
+                </p>
+</div>
+</div>
+<div class="timeline-step">
+<div class="timeline-number">
+                5
+            </div>
+<div class="timeline-content">
+<h3>
+                    📦 Packaged &amp; Delivered
+                </h3>
+<small>
+                    Final Product
+                </small>
+<p>
+                    Ready for consumer
+                </p>
+</div>
+</div>
+</div>
+</section>
+
+<footer>
+
+    🍯 HoneyTrace © 2026
+
+    <br/>
+
+    Blockchain-Based Honey Traceability System
+
+</footer>
+</div>
+<!-- =====================================================
+     ROLE SELECTION MODAL
+===================================================== -->
+<div class="modal" id="roleModal">
+<div class="modal-box">
+<span class="close" onclick="closeModal('roleModal')">
+
+            ×
+
+        </span>
+<div class="modal-title">
+<h2>
+                Choose Login Type
+            </h2>
+<p>
+                Select your account type
+            </p>
+</div>
+<div class="role-options">
+<div class="role-card" onclick="openLogin('Buyer')">
+<div class="role-icon">
+                    🛒
+                </div>
+<h3>
+                    Buyer
+                </h3>
+<p>
+                    Buy and verify honey
+                </p>
+</div>
+<div class="role-card" onclick="openLogin('Seller')">
+<div class="role-icon">
+                    🏪
+                </div>
+<h3>
+                    Seller
+                </h3>
+<p>
+                    Sell and manage honey
+                </p>
+</div>
+</div>
+</div>
+</div>
+<!-- =====================================================
+     LOGIN MODAL
+===================================================== -->
+<div class="modal" id="loginModal">
+<div class="modal-box">
+<span class="close" onclick="closeModal('loginModal')">
+
+            ×
+
+        </span>
+<div class="modal-title">
+<h2>
+<span class="role-name" id="loginRole">
+
+                    Buyer
+
+                </span>
+
+                Login
+
+            </h2>
+<p>
+                Login to HoneyTrace
+            </p>
+</div>
+<form onsubmit="loginUser(event)">
+<div class="form-group">
+<label>
+                    Email or Mobile Number
+                </label>
+<input autocomplete="username" id="loginContact" placeholder="Enter Gmail or Mobile Number" required="" type="text"/>
+</div>
+<div class="form-group">
+<label>
+                    Password
+                </label>
+<input id="loginPassword" placeholder="Enter password" required="" type="password"/>
+</div>
+<button class="form-submit" type="submit">
+
+                Login
+
+            </button>
+</form>
+<div class="switch-text">
+
+            Don't have an account?
+
+            <span onclick="openRegister()">
+                Register
+            </span>
+</div>
+</div>
+</div>
+<!-- =====================================================
+     REGISTRATION MODAL
+===================================================== -->
+<div class="modal" id="registerModal">
+<div class="modal-box">
+<span class="close" onclick="closeModal('registerModal')">
+
+            ×
+
+        </span>
+<div class="modal-title">
+<h2>
+<span class="role-name" id="registerRole">
+
+                    Buyer
+
+                </span>
+
+                Registration
+
+            </h2>
+<p>
+                Create your HoneyTrace account
+            </p>
+</div>
+<form onsubmit="registerUser(event)">
+<div class="form-group">
+<label>
+                    Full Name
+                </label>
+<input id="registerName" placeholder="Enter full name" required="" type="text"/>
+</div>
+<div class="form-group">
+<label>
+                    Email or Mobile Number
+                </label>
+<input autocomplete="username" id="registerContact" placeholder="Enter Gmail or Mobile Number" required="" type="text"/>
+</div>
+<div class="form-group">
+<label>
+                    Password
+                </label>
+<input id="registerPassword" placeholder="Create password" required="" type="password"/>
+</div>
+<div class="form-group">
+<label>
+                    Confirm Password
+                </label>
+<input id="registerConfirmPassword" placeholder="Confirm password" required="" type="password"/>
+</div>
+<button class="form-submit" type="submit">
+
+                Create Account
+
+            </button>
+</form>
+<div class="switch-text">
+
+            Already have an account?
+
+            <span onclick="openLogin(currentRole)">
+                Login
+            </span>
+</div>
+</div>
+</div>
+<!-- =====================================================
+     PHONE OTP VERIFICATION MODAL
+===================================================== -->
+<div class="modal" id="otpModal">
+<div class="modal-box">
+<span class="close" onclick="closeModal('otpModal')">
+            ×
+        </span>
+<div class="modal-title">
+<h2>Verify Mobile Number</h2>
+<p id="otpMessage">Enter the 6-digit OTP sent to your mobile number.</p>
+</div>
+<form onsubmit="verifyPhoneOTP(event)">
+<div class="form-group">
+<label>Verification Code</label>
+<input autocomplete="one-time-code" id="phoneOTP" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" placeholder="Enter 6-digit OTP" required="" type="text"/>
+</div>
+<button class="form-submit" type="submit">
+                Verify Mobile Number
+            </button>
+</form>
+<div class="switch-text">
+            Didn't receive the OTP?
+            <span onclick="resendPhoneOTP()">Resend OTP</span>
+</div>
+</div>
+</div>
+<!-- =====================================================
+     USER DASHBOARD
+===================================================== -->
+<div class="user-dashboard" id="userDashboard">
+<div class="user-header">
+<div>
+<h1 id="dashboardTitle">
+                Dashboard
+            </h1>
+<p id="dashboardWelcome">
+                Welcome to HoneyTrace
+            </p>
+</div>
+<button class="logout" onclick="logout()">
+
+            Logout
+
+        </button>
+</div>
+<div class="user-grid">
+<!-- PROFILE -->
+<div class="user-card">
+<h2>
+                👤 Profile
+            </h2>
+<p>Name: <strong id="profileName">-</strong></p>
+<p>Role: <strong id="profileRole">-</strong></p>
+<p>Login: <strong id="profileContact">-</strong></p>
+<p>Phone: <strong id="profilePhone">-</strong></p>
+<div id="profileDetailsForm" style="margin-top:18px;">
+<h3 style="color:#f5c542;margin-bottom:12px;">Complete Profile Details</h3>
+<div class="form-group" id="businessNameGroup" style="display:none;"><label>Business Name</label><input id="profileBusinessName" type="text" placeholder="Enter business name"></div>
+<div class="form-group" id="apiaryNameGroup" style="display:none;"><label>Apiary Name</label><input id="profileApiaryName" type="text" placeholder="Enter apiary name"></div>
+<div class="form-group"><label>Phone</label><input id="profilePhoneInput" type="text" placeholder="Enter mobile number"></div>
+<div class="form-group"><label>Address</label><input id="profileAddress" type="text" placeholder="Enter address"></div>
+<div class="form-group" id="locationGroup" style="display:none;"><label>Location</label><input id="profileLocation" type="text" placeholder="Enter apiary location"></div>
+<div class="form-group" id="beeSpeciesGroup" style="display:none;"><label>Bee Species</label><input id="profileBeeSpecies" type="text" placeholder="Enter bee species"></div>
+<div class="form-group" id="hiveCountGroup" style="display:none;"><label>Hive Count</label><input id="profileHiveCount" type="number" min="0" placeholder="Enter hive count"></div>
+<div class="form-group" id="cityGroup" style="display:none;"><label>City</label><input id="profileCity" type="text" placeholder="Enter city"></div>
+<button class="form-submit" type="button" onclick="saveProfileDetails()">Save Profile Details</button>
+<button class="main-btn outline" type="button" style="margin-top:10px;width:100%;" onclick="downloadUserExcel()">⬇ Download My Data (Excel)</button>
+</div>
+</div>
+<!-- HONEY -->
+<div class="user-card">
+<h2>
+                🍯 Honey
+            </h2>
+<p>
+                Organic Forest Honey
+            </p>
+<p>
+                Batch: HNY-2026-001
+            </p>
+<p>
+                Quantity: 25 KG
+            </p>
+<p>
+                Status: ✓ Verified
+            </p>
+</div>
+<!-- BLOCKCHAIN -->
+<div class="user-card">
+<h2>
+                🔗 Blockchain
+            </h2>
+<p>
+                Transaction Status:
+                ✓ Recorded
+            </p>
+<p>
+                Hash:
+                0x8f3a9c72bd...
+            </p>
+<p>
+                Network:
+                Demo Blockchain
+            </p>
+</div>
+</div>
+<!-- SELLER HONEY ENTRY -->
+<div class="honey-form" id="sellerHoneyForm">
+<h2 style="color:#f5c542;margin-bottom:20px;">
+
+            🍯 Add New Honey Batch
+
+        </h2>
+<div class="form-group">
+<label>
+                Honey Type
+            </label>
+<select id="honeyType">
+<option>
+                    Organic Forest Honey
+                </option>
+<option>
+                    Wildflower Honey
+                </option>
+<option>
+                    Neem Honey
+                </option>
+<option>
+                    Eucalyptus Honey
+                </option>
+<option>
+                    Multi-floral Honey
+                </option>
+</select>
+</div>
+<div class="form-group">
+<label>
+                Quantity
+            </label>
+<input id="honeyQuantity" placeholder="Example: 25 KG" type="text"/>
+</div>
+<div class="form-group">
+<label>
+                Harvest Date
+            </label>
+<input id="harvestDate" type="date"/>
+</div>
+<div class="form-group">
+<label>
+                Origin
+            </label>
+<input id="honeyOrigin" type="text" value="Erode, Tamil Nadu"/>
+</div>
+<button class="form-submit" onclick="createHoneyBatch()">
+
+            Generate Honey Batch &amp; QR
+
+        </button>
+<div id="sellerQR" style="margin-top:25px;text-align:center;">
+</div>
+</div>
+</div>
+<!-- =====================================================
+     VERIFICATION PAGE
+===================================================== -->
+<div class="verification" id="verificationPage">
+<div class="verify-container">
+<div class="verify-header">
+<div class="verify-logo">
+                🍯 HoneyTrace
+            </div>
+<p style="color:#8fa197;">
+                Honey Authenticity &amp; Traceability
+            </p>
+<div class="verify-status">
+
+                ✓ Blockchain Verified
+
+            </div>
+<p id="verificationResultNote" style="margin-top:10px;font-size:13px;"></p>
+</div>
+<!-- HONEY -->
+<div class="verify-card">
+<h2>
+                🍯 Honey Details
+            </h2>
+<div class="details-grid">
+<div class="detail-box">
+<label>
+                        Honey Type
+                    </label>
+<strong id="verifyHoneyType">
+                        Organic Forest Honey
+                    </strong>
+</div>
+<div class="detail-box">
+<label>
+                        Batch ID
+                    </label>
+<strong id="verifyBatch">
+                        HNY-2026-001
+                    </strong>
+</div>
+<div class="detail-box">
+<label>
+                        Quantity
+                    </label>
+<strong id="verifyQuantity">
+                        25 KG
+                    </strong>
+</div>
+<div class="detail-box">
+<label>
+                        Origin
+                    </label>
+<strong id="verifyOrigin">
+                        Erode, Tamil Nadu
+                    </strong>
+</div>
+<div class="detail-box">
+<label>
+                        Harvest Date
+                    </label>
+<strong id="verifyHarvest">
+                        12 September 2026
+                    </strong>
+</div>
+<div class="detail-box">
+<label>
+                        Registered Date
+                    </label>
+<strong>
+                        13 September 2026
+                    </strong>
+</div>
+<div class="detail-box">
+<label>
+                        Honey Grade
+                    </label>
+<strong>
+                        Premium Grade A
+                    </strong>
+</div>
+<div class="detail-box">
+<label>
+                        Quality
+                    </label>
+<strong style="color:#6ee7a0;">
+                        ✓ Verified
+                    </strong>
+</div>
+</div>
+</div>
+<!-- SELLER -->
+<div class="verify-card">
+<h2>
+                🏪 Seller Details
+            </h2>
+<div class="seller-info">
+<div class="seller-avatar">
+                    👨‍🌾
+                </div>
+<div>
+<h3>
+                        Arun Kumar
+                    </h3>
+<p style="color:#8fa197;">
+                        Seller ID: SEL-10027
+                    </p>
+</div>
+</div>
+<div class="details-grid">
+<div class="detail-box">
+<label>
+                        Phone
+                    </label>
+<strong>
+                        +91 98765 43210
+                    </strong>
+</div>
+<div class="detail-box">
+<label>
+                        Email
+                    </label>
+<strong>
+                        arun.honey@example.com
+                    </strong>
+</div>
+<div class="detail-box">
+<label>
+                        Business
+                    </label>
+<strong>
+                        Green Hive Honey Farm
+                    </strong>
+</div>
+<div class="detail-box">
+<label>
+                        Location
+                    </label>
+<strong>
+                        Erode, Tamil Nadu
+                    </strong>
+</div>
+</div>
+</div>
+<!-- JOURNEY -->
+<div class="verify-card">
+<h2>
+                🔗 Honey Journey
+            </h2>
+<div class="timeline">
+<div class="timeline-step">
+<div class="timeline-number">
+                        1
+                    </div>
+<div class="timeline-content">
+<h3>
+                            🐝 Beehive Registered
+                        </h3>
+<p>
+                            Hive ID: HV-1024
+                        </p>
+</div>
+</div>
+<div class="timeline-step">
+<div class="timeline-number">
+                        2
+                    </div>
+<div class="timeline-content">
+<h3>
+                            🍯 Honey Harvested
+                        </h3>
+<p>
+                            12 September 2026
+                        </p>
+</div>
+</div>
+<div class="timeline-step">
+<div class="timeline-number">
+                        3
+                    </div>
+<div class="timeline-content">
+<h3>
+                            🧪 Quality Tested
+                        </h3>
+<p>
+                            Moisture: 17.2% |
+                            Purity: 98%
+                        </p>
+</div>
+</div>
+<div class="timeline-step">
+<div class="timeline-number">
+                        4
+                    </div>
+<div class="timeline-content">
+<h3>
+                            🔗 Blockchain Registered
+                        </h3>
+<p>
+                            13 September 2026
+                        </p>
+</div>
+</div>
+<div class="timeline-step">
+<div class="timeline-number">
+                        5
+                    </div>
+<div class="timeline-content">
+<h3>
+                            📦 Packaged
+                        </h3>
+<p>
+                            14 September 2026
+                        </p>
+</div>
+</div>
+</div>
+</div>
+<!-- BLOCKCHAIN -->
+<div class="verify-card">
+<h2>
+                ⛓️ Blockchain Record
+            </h2>
+<div class="blockchain-box">
+<p style="color:#81958a;">
+                    Transaction ID
+                </p>
+<p class="hash">
+                    0x8f3a9c72bd4210ab77c91e5d0a31f82
+                </p>
+<br/>
+<p style="color:#81958a;">
+                    Status
+                </p>
+<p style="color:#6ee7a0;">
+                    ✓ Permanently Recorded
+                </p>
+</div>
+</div>
+<button class="main-btn yellow" onclick="closeVerification()">
+
+            ← Back to HoneyTrace
+
+        </button>
+</div>
+</div>
+<script>
+
+
+if(!window.honeyTraceDB){
+    console.error("HoneyTrace: Supabase client was not initialized.");
+}
+
+/* =====================================================
+   GLOBAL VARIABLES
+===================================================== */
+
+let currentRole = "Buyer";
+
+let batchNumber = 1;
+
+// Phone verification state
+let pendingPhone = "";
+let pendingPhoneName = "";
+let pendingPhoneRole = "Buyer";
+
+function normalizeIndianPhone(value){
+    let phone = String(value || "").trim().replace(/[\s()-]/g, "");
+
+    if(phone.startsWith("+91")){
+        return phone;
+    }
+
+    if(phone.startsWith("91") && phone.length === 12){
+        return "+" + phone;
+    }
+
+    if(/^\d{10}$/.test(phone)){
+        return "+91" + phone;
+    }
+
+    return phone;
+}
+
+function isMobileNumber(value){
+    const phone = normalizeIndianPhone(value);
+    return /^\+91[6-9]\d{9}$/.test(phone);
+}
+
+async function verifyPhoneOTP(event){
+
+    event.preventDefault();
+
+    const token = document.getElementById("phoneOTP").value.trim();
+
+    if(!/^\d{6}$/.test(token)){
+        alert("Please enter the 6-digit OTP.");
+        return;
+    }
+
+    if(!pendingPhone){
+        alert("Mobile verification session expired. Please register again.");
+        closeModal("otpModal");
+        openRegister();
+        return;
+    }
+
+    const { data, error } =
+        await window.honeyTraceDB.auth.verifyOtp({
+            phone: pendingPhone,
+            token,
+            type: "sms"
+        });
+
+    if(error){
+        alert("OTP verification failed: " + error.message);
+        return;
+    }
+
+    closeModal("otpModal");
+
+    const user = data.user;
+
+    if(user){
+        const role = pendingPhoneRole;
+        const dbRole = normalizeRole(role);
+
+        // If a profile trigger is not configured, create/update the profile here.
+        const { error: profileError } =
+            await window.honeyTraceDB
+                .from("profiles")
+                .upsert({
+                    user_id: user.id,
+                    full_name: pendingPhoneName,
+                    role: dbRole
+                }, { onConflict: "user_id" });
+
+        if(profileError){
+            console.warn("Profile save warning:", profileError.message);
+        }
+
+        alert("Mobile number verified successfully!");
+        showUserDashboard(role, pendingPhoneName || user.phone);
+    }
+
+    pendingPhone = "";
+    pendingPhoneName = "";
+    pendingPhoneRole = "Buyer";
+}
+
+async function resendPhoneOTP(){
+
+    if(!pendingPhone){
+        alert("Mobile verification session expired. Please register again.");
+        return;
+    }
+
+    const { error } =
+        await window.honeyTraceDB.auth.signInWithOtp({
+            phone: pendingPhone,
+            options: { shouldCreateUser: false }
+        });
+
+    if(error){
+        alert("Could not resend OTP: " + error.message);
+        return;
+    }
+
+    alert("A new OTP has been sent to " + pendingPhone);
+}
+
+
+/* =====================================================
+   SCROLL
+===================================================== */
+
+function scrollToSection(id){
+
+    document
+        .getElementById(id)
+        .scrollIntoView({
+            behavior:"smooth"
+        });
+
+}
+
+
+/* =====================================================
+   ROLE SELECTION
+===================================================== */
+
+function openRoleSelection(){
+
+    document
+        .getElementById("roleModal")
+        .style.display="flex";
+
+}
+
+
+/* =====================================================
+   LOGIN
+===================================================== */
+
+function openLogin(role){
+
+    currentRole = role;
+
+    const loginContact = document.getElementById("loginContact");
+    const loginPassword = document.getElementById("loginPassword");
+    if(loginContact) loginContact.value = "";
+    if(loginPassword) loginPassword.value = "";
+
+    closeModal("roleModal");
+
+    document
+        .getElementById("loginRole")
+        .textContent = role;
+
+    document
+        .getElementById("loginModal")
+        .style.display="flex";
+
+}
+
+
+/* =====================================================
+   REGISTER
+===================================================== */
+
+function openRegister(){
+
+    closeModal("loginModal");
+
+    const registerContact = document.getElementById("registerContact");
+    const registerName = document.getElementById("registerName");
+    const registerPassword = document.getElementById("registerPassword");
+    const registerConfirmPassword = document.getElementById("registerConfirmPassword");
+    if(registerContact) registerContact.value = "";
+    if(registerName) registerName.value = "";
+    if(registerPassword) registerPassword.value = "";
+    if(registerConfirmPassword) registerConfirmPassword.value = "";
+
+    document
+        .getElementById("registerRole")
+        .textContent = currentRole;
+
+    document
+        .getElementById("registerModal")
+        .style.display="flex";
+
+}
+
+
+/* =====================================================
+   CLOSE MODAL
+===================================================== */
+
+function closeModal(id){
+
+    document
+        .getElementById(id)
+        .style.display="none";
+
+}
+
+
+function normalizeRole(role){
+    const value = String(role || "").toLowerCase();
+    if(value === "seller") return "seller";
+    if(value === "beekeeper") return "beekeeper";
+    return "buyer";
+}
+
+function displayRoleFromDb(role){
+    const value = normalizeRole(role);
+    return value === "seller" ? "Seller" : value === "beekeeper" ? "Beekeeper" : "Buyer";
+}
+
+function getCurrentUserContact(user){
+    return user?.email || user?.phone || "-";
+}
+
+function clearProfileForm(){
+    ["profileBusinessName","profileApiaryName","profilePhoneInput","profileAddress","profileLocation","profileBeeSpecies","profileHiveCount","profileCity"].forEach(id => {
+        const el = document.getElementById(id);
+        if(el) el.value = "";
+    });
+}
+
+async function loadProfileDetails(user, role){
+    const profileName = document.getElementById("profileName");
+    const profileRole = document.getElementById("profileRole");
+    const profileContact = document.getElementById("profileContact");
+    const profilePhone = document.getElementById("profilePhone");
+    if(profileName) profileName.textContent = user?.user_metadata?.full_name || "-";
+    if(profileRole) profileRole.textContent = role;
+    if(profileContact) profileContact.textContent = getCurrentUserContact(user);
+
+    const groups = {
+      businessNameGroup: role === "Seller", apiaryNameGroup: role === "Beekeeper",
+      locationGroup: role === "Beekeeper", beeSpeciesGroup: role === "Beekeeper",
+      hiveCountGroup: role === "Beekeeper", cityGroup: role === "Buyer"
+    };
+    Object.entries(groups).forEach(([id,show]) => { const el=document.getElementById(id); if(el) el.style.display=show?"block":"none"; });
+    clearProfileForm();
+
+    let table = role === "Seller" ? "seller_profiles" : role === "Beekeeper" ? "beekeeper_profiles" : "buyer_profiles";
+    const { data, error } = await window.honeyTraceDB.from(table).select("*").eq("user_id", user.id).maybeSingle();
+    if(error){ console.warn("Profile details load:", error.message); return; }
+    if(!data) return;
+    const set=(id,val)=>{const el=document.getElementById(id); if(el) el.value=val ?? "";};
+    if(role === "Seller"){ set("profileBusinessName",data.business_name); set("profilePhoneInput",data.phone); set("profileAddress",data.address); }
+    else if(role === "Beekeeper"){ set("profileApiaryName",data.apiary_name); set("profilePhoneInput",data.phone); set("profileAddress",data.address); set("profileLocation",data.location); set("profileBeeSpecies",data.bee_species); set("profileHiveCount",data.hive_count); }
+    else { set("profilePhoneInput",data.phone); set("profileAddress",data.address); set("profileCity",data.city); }
+    if(profilePhone) profilePhone.textContent = data.phone || user.phone || "-";
+}
+
+async function saveProfileDetails(){
+    const { data:{user} } = await window.honeyTraceDB.auth.getUser();
+    if(!user) return alert("Please login first.");
+    const role = displayRoleFromDb((await window.honeyTraceDB.from("profiles").select("role").eq("user_id",user.id).maybeSingle()).data?.role);
+    const common = { user_id:user.id, phone:document.getElementById("profilePhoneInput")?.value.trim() || "", address:document.getElementById("profileAddress")?.value.trim() || "" };
+    let table, payload;
+    if(role === "Seller"){ table="seller_profiles"; payload={...common, seller_name:document.getElementById("profileName")?.textContent || "", business_name:document.getElementById("profileBusinessName")?.value.trim() || ""}; }
+    else if(role === "Beekeeper"){ table="beekeeper_profiles"; payload={...common, beekeeper_name:document.getElementById("profileName")?.textContent || "", apiary_name:document.getElementById("profileApiaryName")?.value.trim() || "", location:document.getElementById("profileLocation")?.value.trim() || "", bee_species:document.getElementById("profileBeeSpecies")?.value.trim() || "", hive_count:Number(document.getElementById("profileHiveCount")?.value || 0)}; }
+    else { table="buyer_profiles"; payload={...common, buyer_name:document.getElementById("profileName")?.textContent || "", city:document.getElementById("profileCity")?.value.trim() || ""}; }
+    const {error}=await window.honeyTraceDB.from(table).upsert(payload,{onConflict:"user_id"});
+    if(error) return alert("Profile save failed: " + error.message);
+    document.getElementById("profilePhone").textContent=payload.phone || user.phone || "-";
+    alert("Profile details saved successfully.");
+}
+
+async function downloadUserExcel(){
+    if(typeof XLSX === "undefined") return alert("Excel library is not loaded. Please refresh the page.");
+
+    const { data:{user} } = await window.honeyTraceDB.auth.getUser();
+    if(!user) return alert("Please login first.");
+
+    const { data:profile, error:profileError } = await window.honeyTraceDB
+        .from("profiles")
+        .select("full_name,role,created_at")
+        .eq("user_id",user.id)
+        .maybeSingle();
+
+    if(profileError) return alert("Could not load profile: " + profileError.message);
+
+    const role=normalizeRole(profile?.role);
+    const table=role==="seller" ? "seller_profiles" : role==="beekeeper" ? "beekeeper_profiles" : "buyer_profiles";
+
+    const { data:details, error:detailsError } = await window.honeyTraceDB
+        .from(table)
+        .select("*")
+        .eq("user_id",user.id);
+
+    const { data:batches, error:batchesError } = await window.honeyTraceDB
+        .from("honey_batches")
+        .select("batch_id,honey_type,quantity,harvest_date,origin,status,blockchain_hash,created_at")
+        .eq("user_id",user.id)
+        .order("created_at",{ascending:false});
+
+    const { data:hives, error:hivesError } = await window.honeyTraceDB
+        .from("hives")
+        .select("id,hive_name,location,bee_species,installation_date,status,created_at")
+        .eq("user_id",user.id)
+        .order("created_at",{ascending:false});
+
+    if(detailsError || batchesError || hivesError){
+        const failed = detailsError ? "role profile" : batchesError ? "honey batches" : "hives";
+        const message=(detailsError||batchesError||hivesError)?.message || "Unknown database error";
+        return alert("Excel export failed while loading " + failed + ": " + message);
+    }
+
+    const hiveIds=(hives||[]).map(h=>h.id);
+    let sensorReadings=[];
+    let audioAnalysis=[];
+    let healthStatus=[];
+
+    if(hiveIds.length){
+        const [sensorResult,audioResult,healthResult]=await Promise.all([
+            window.honeyTraceDB.from("hive_sensor_readings").select("*").in("hive_id",hiveIds).order("recorded_at",{ascending:false}),
+            window.honeyTraceDB.from("bee_audio_analysis").select("*").in("hive_id",hiveIds).order("recorded_at",{ascending:false}),
+            window.honeyTraceDB.from("hive_health_status").select("*").in("hive_id",hiveIds).order("created_at",{ascending:false})
+        ]);
+        if(sensorResult.error || audioResult.error || healthResult.error){
+            const message=(sensorResult.error||audioResult.error||healthResult.error)?.message || "IoT data error";
+            return alert("Excel export failed: " + message);
+        }
+        sensorReadings=sensorResult.data||[];
+        audioAnalysis=audioResult.data||[];
+        healthStatus=healthResult.data||[];
+    }
+
+    const wb=XLSX.utils.book_new();
+    const add=(name,rows)=>{
+        const sheetRows=rows?.length ? rows : [{Message:"No data available"}];
+        XLSX.utils.book_append_sheet(wb,XLSX.utils.json_to_sheet(sheetRows),name);
+    };
+
+    add("Profile",[{
+        user_id:user.id,
+        full_name:profile?.full_name||"",
+        role:profile?.role||"",
+        login:user.email||user.phone||"",
+        profile_created_at:profile?.created_at||""
+    }]);
+    add("Role Details",details||[]);
+    add("Honey Batches",batches||[]);
+    add("Hives",hives||[]);
+    add("Sensor Readings",sensorReadings);
+    add("Bee Audio",audioAnalysis);
+    add("Hive Health",healthStatus);
+
+    const safeName=(profile?.full_name||"User").replace(/[^a-z0-9]+/gi,"_").replace(/^_+|_+$/g,"") || "User";
+    XLSX.writeFile(wb,`HoneyTrace_${safeName}_Data.xlsx`);
+}
+
+/* =====================================================
+   LOGIN SUBMIT
+===================================================== */
+
+async function loginUser(event){
+
+    event.preventDefault();
+
+    const contact =
+        document.getElementById("loginContact").value.trim();
+
+    const password =
+        document.getElementById("loginPassword").value;
+
+    if(!window.honeyTraceDB){
+        alert("Supabase is not connected. Please refresh the page.");
+        return;
+    }
+
+    if(!contact || !password){
+        alert("Please enter your email/mobile number and password.");
+        return;
+    }
+
+    const isPhone = isMobileNumber(contact);
+
+    const credentials = isPhone
+        ? { phone: normalizeIndianPhone(contact), password }
+        : { email: contact, password };
+
+    const { data, error } =
+        await window.honeyTraceDB.auth.signInWithPassword(credentials);
+
+    if(error){
+        alert("Login failed: " + error.message);
+        return;
+    }
+
+    const user = data.user;
+
+    if(user.email && !user.email_confirmed_at){
+        await window.honeyTraceDB.auth.signOut();
+        alert("Please verify your email from the verification mail before logging in.");
+        return;
+    }
+
+    const { data: profile, error: profileError } =
+        await window.honeyTraceDB
+            .from("profiles")
+            .select("full_name, role")
+            .eq("user_id", user.id)
+            .maybeSingle();
+
+    if(profileError){
+        alert("Profile load failed: " + profileError.message);
+        return;
+    }
+
+    const role = displayRoleFromDb(profile?.role);
+    const name = profile?.full_name || user.user_metadata?.full_name || user.email || user.phone;
+
+    closeModal("loginModal");
+    showUserDashboard(role, name);
+}
+
+
+/* =====================================================
+   REGISTER
+===================================================== */
+
+async function registerUser(event){
+
+    event.preventDefault();
+
+    const name =
+        document.getElementById("registerName").value.trim();
+
+    const contact =
+        document.getElementById("registerContact").value.trim();
+
+    const password =
+        document.getElementById("registerPassword").value;
+
+    const confirmPassword =
+        document.getElementById("registerConfirmPassword").value;
+
+    if(!name || !contact || !password){
+        alert("Please fill all required fields.");
+        return;
+    }
+
+    if(password.length < 6){
+        alert("Password must be at least 6 characters.");
+        return;
+    }
+
+    if(password !== confirmPassword){
+        alert("Passwords do not match.");
+        return;
+    }
+
+    if(!window.honeyTraceDB){
+        alert("Supabase is not connected. Please refresh the page.");
+        return;
+    }
+
+    const role = normalizeRole(currentRole);
+
+    const isPhone = isMobileNumber(contact);
+
+    if(isPhone){
+
+        const phone = normalizeIndianPhone(contact);
+
+        const { data, error } =
+            await window.honeyTraceDB.auth.signUp({
+                phone,
+                password,
+                options: {
+                    data: {
+                        full_name: name,
+                        role: role
+                    }
+                }
+            });
+
+        if(error){
+            alert("Registration failed: " + error.message);
+            return;
+        }
+
+        pendingPhone = phone;
+        pendingPhoneName = name;
+        pendingPhoneRole = currentRole;
+
+        closeModal("registerModal");
+        document.getElementById("phoneOTP").value = "";
+        document.getElementById("otpMessage").textContent =
+            "Enter the 6-digit OTP sent to " + phone;
+        document.getElementById("otpModal").style.display = "flex";
+
+        if(data.session){
+            alert("Mobile number is already verified. Registration successful!");
+        }
+
+        return;
+    }
+
+    const { data, error } =
+        await window.honeyTraceDB.auth.signUp({
+            email: contact,
+            password,
+            options: {
+                emailRedirectTo: window.location.origin + window.location.pathname,
+                data: {
+                    full_name: name,
+                    role: role
+                }
+            }
+        });
+
+    if(error){
+        alert("Registration failed: " + error.message);
+        return;
+    }
+
+    closeModal("registerModal");
+
+    if(data.session){
+        alert(currentRole + " registration successful!");
+        showUserDashboard(currentRole, name);
+    }else{
+        alert(
+            currentRole +
+            " registration successful! Please check your email to confirm your account."
+        );
+        openLogin(currentRole);
+    }
+}
+
+
+/* =====================================================
+   USER DASHBOARD
+===================================================== */
+
+async function showUserDashboard(role,contact){
+
+    document
+        .getElementById("mainWebsite")
+        .style.display="none";
+
+    document
+        .getElementById("userDashboard")
+        .style.display="block";
+
+    document
+        .getElementById("dashboardTitle")
+        .textContent =
+        role + " Dashboard";
+
+    document
+        .getElementById("dashboardWelcome")
+        .textContent =
+        "Welcome to HoneyTrace, " +
+        contact;
+
+    const { data:{user} } = await window.honeyTraceDB.auth.getUser();
+    if(user){
+        const { data:profile } = await window.honeyTraceDB.from("profiles").select("full_name, role").eq("user_id",user.id).maybeSingle();
+        const realRole = displayRoleFromDb(profile?.role || role);
+        currentRole = realRole;
+        document.getElementById("dashboardTitle").textContent = realRole + " Dashboard";
+        document.getElementById("dashboardWelcome").textContent = "Welcome to HoneyTrace, " + (profile?.full_name || contact);
+        await loadProfileDetails(user, realRole);
+    }
+
+    /* Seller can add honey */
+
+    const dashboardRole = document.getElementById("profileRole")?.textContent || role;
+    if(dashboardRole === "Seller"){
+
+        document
+        .getElementById("sellerHoneyForm")
+        .style.display="block";
+
+    }
+    else{
+
+        document
+        .getElementById("sellerHoneyForm")
+        .style.display="none";
+
+    }
+
+}
+
+
+/* =====================================================
+   LOGOUT
+===================================================== */
+
+async function logout(){
+
+    document
+        .getElementById("userDashboard")
+        .style.display="none";
+
+    document
+        .getElementById("mainWebsite")
+        .style.display="block";
+
+    if(window.honeyTraceDB) await window.honeyTraceDB.auth.signOut();
+
+}
+
+/* =====================================================
+   SELLER CREATE HONEY
+===================================================== */
+
+async function createHoneyBatch(){
+
+    if(!window.honeyTraceDB){
+        alert("Supabase is not connected. Please refresh the page.");
+        return;
+    }
+
+    const { data: { user } } =
+        await window.honeyTraceDB.auth.getUser();
+
+    if(!user){
+        alert("Please login first.");
+        return;
+    }
+
+    const type = document.getElementById("honeyType").value;
+    const quantity = document.getElementById("honeyQuantity").value.trim() || "25 KG";
+    const harvest = document.getElementById("harvestDate").value || new Date().toISOString().slice(0,10);
+    const origin = document.getElementById("honeyOrigin").value.trim();
+
+    if(!origin){
+        alert("Please enter the honey origin.");
+        return;
+    }
+
+    const batchID = "HNY-" + new Date().getFullYear() + "-" +
+        Math.floor(1000 + Math.random() * 9000);
+
+    const recordForHash = JSON.stringify({
+        batchID,
+        user_id: user.id,
+        type,
+        quantity,
+        harvest,
+        origin
+    });
+
+    const hashBuffer = await crypto.subtle.digest(
+        "SHA-256",
+        new TextEncoder().encode(recordForHash)
+    );
+
+    const blockchainHash = Array.from(new Uint8Array(hashBuffer))
+        .map(b => b.toString(16).padStart(2,"0"))
+        .join("");
+
+    const { error } = await window.honeyTraceDB
+        .from("honey_batches")
+        .insert({
+            user_id: user.id,
+            batch_id: batchID,
+            honey_type: type,
+            quantity,
+            harvest_date: harvest,
+            origin,
+            status: "Verified",
+            blockchain_hash: blockchainHash
+        });
+
+    if(error){
+        alert("Batch save failed: " + error.message);
+        return;
+    }
+
+    const qr = document.getElementById("sellerQR");
+    if(!qr){
+        alert("Seller QR area is not available. Please refresh the page.");
+        return;
+    }
+    if(typeof QRCode === "undefined"){
+        alert("QR library failed to load. Please check your internet connection and refresh the page.");
+        return;
+    }
+    qr.innerHTML = "";
+
+    const qrURL = makeVerificationURL(batchID);
+
+    new QRCode(qr,{
+        text: qrURL,
+        width: 220,
+        height: 220,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H
+    });
+
+    // Store the generated batch data before creating action buttons.
+    window.lastGeneratedBatch = {
+        batchID, type, quantity, harvest, origin, blockchainHash, qrURL
+    };
+
+    // IMPORTANT: Do not use `innerHTML +=` after QRCode() because it can
+    // replace the generated canvas/image and make downloads blank.
+    const info = document.createElement("div");
+    info.style.marginTop = "12px";
+    info.innerHTML =
+        "<h3 style='color:#f5c542;margin-top:15px;'>" + escapeHtml(batchID) + "</h3>" +
+        "<p style='color:#8fa197;margin-top:8px;'>" + escapeHtml(type) + " | " + escapeHtml(quantity) + "</p>" +
+        "<p style='color:#6ee7a0;margin-top:8px;'>✓ Saved to Supabase</p>";
+    qr.appendChild(info);
+
+    const actions = document.createElement("div");
+    actions.style.marginTop = "12px";
+
+    const downloadBtn = document.createElement("button");
+    downloadBtn.className = "main-btn yellow";
+    downloadBtn.type = "button";
+    downloadBtn.textContent = "⬇ Download QR";
+    downloadBtn.onclick = downloadSellerQR;
+
+    const printBtn = document.createElement("button");
+    printBtn.className = "main-btn";
+    printBtn.type = "button";
+    printBtn.style.marginLeft = "8px";
+    printBtn.textContent = "🖨 Print QR";
+    printBtn.onclick = printSellerQR;
+
+    actions.appendChild(downloadBtn);
+    actions.appendChild(printBtn);
+    qr.appendChild(actions);
+
+    await loadMyBatchesInline();
+}
+
+async function loadMyBatchesInline(){
+    const { data: { user } } = await window.honeyTraceDB.auth.getUser();
+    if(!user) return;
+
+    const { data, error } = await window.honeyTraceDB
+        .from("honey_batches")
+        .select("batch_id, honey_type, quantity, status")
+        .eq("user_id", user.id)
+        .order("created_at", { ascending:false });
+
+    if(error) return;
+
+    const tbody = document.getElementById("batchTableBody");
+    if(!tbody) return;
+
+    tbody.innerHTML = data?.length ? data.map(batch =>
+        `<tr><td>${escapeHtml(batch.batch_id)}</td><td>${escapeHtml(batch.honey_type)}</td><td>${escapeHtml(batch.quantity)}</td><td class="verified">✓ ${escapeHtml(batch.status)}</td></tr>`
+    ).join("") : `<tr><td colspan="4">No honey batches created yet.</td></tr>`;
+}
+
+function escapeHtml(value){
+    return String(value ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#039;"}[c]));
+}
+
+function makeVerificationURL(batchID){
+    const base = window.location.origin + window.location.pathname;
+    return base + "?verify=" + encodeURIComponent(batchID);
+}
+
+function getQRSourceElement(){
+    const qr = document.getElementById("sellerQR");
+    if(!qr) return null;
+
+    // QRCode.js may render a canvas or an img depending on browser/library path.
+    const canvas = qr.querySelector("canvas");
+    if(canvas) return { type: "canvas", element: canvas };
+
+    const img = qr.querySelector("img");
+    if(img && img.src) return { type: "img", element: img };
+
+    return null;
+}
+
+function getQRDataURL(){
+    const source = getQRSourceElement();
+    if(!source) return null;
+
+    if(source.type === "canvas") {
+        try {
+            return source.element.toDataURL("image/png");
+        } catch(err) {
+            console.error("QR canvas export error:", err);
+        }
+    }
+
+    if(source.type === "img" && source.element.src) {
+        return source.element.src;
+    }
+
+    return null;
+}
+
+function downloadSellerQR(){
+    const dataURL = getQRDataURL();
+    if(!dataURL){
+        alert("QR image is not ready. Please generate the batch QR again.");
+        return;
+    }
+
+    const batchID = window.lastGeneratedBatch?.batchID || "HoneyTrace-QR";
+    const link = document.createElement("a");
+    link.href = dataURL;
+    link.download = batchID + "_QR.png";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+}
+
+function printSellerQR(){
+    const dataURL = getQRDataURL();
+    if(!dataURL){
+        alert("QR image is not ready. Please generate the batch QR again.");
+        return;
+    }
+
+    const win = window.open("", "_blank", "width=500,height=650");
+    if(!win){
+        alert("Please allow pop-ups to print the QR.");
+        return;
+    }
+
+    const batchID = escapeHtml(window.lastGeneratedBatch?.batchID || "");
+    win.document.write(`<!doctype html><html><head><title>HoneyTrace QR</title></head><body style="font-family:Arial;text-align:center;padding:30px"><h2>HoneyTrace</h2><img src="${dataURL}" style="width:300px;height:300px"><h3>${batchID}</h3><p>Scan to verify honey authenticity</p></body></html>`);
+    win.document.close();
+    setTimeout(() => win.print(), 300);
+}
+
+</script>
+<button aria-label="Open HoneyTrace AI" id="aiAssistantButton" onclick="toggleAIAssistant()">🤖</button>
+<div aria-label="HoneyTrace AI Assistant" id="aiAssistantPanel" role="dialog">
+<div class="ai-head"><div><strong>HoneyTrace AI</strong><div style="font-size:11px;color:#8fa197">Hive &amp; honey assistant</div></div><button class="ai-close" onclick="toggleAIAssistant()">×</button></div>
+<div class="ai-status" id="aiStatus">Ready. Ask about batches, hive health or sensor data.</div>
+<div class="ai-suggest">
+<button onclick="askAISuggestion('Show my latest honey batches')">Latest batches</button>
+<button onclick="askAISuggestion('Explain my latest batch status')">Batch status</button>
+<button onclick="askAISuggestion('What hive sensor values should I monitor?')">Hive sensors</button>
+</div>
+<div class="ai-body" id="aiMessages"><div class="ai-msg ai-bot">Hi! I’m HoneyTrace AI. I can explain your honey batches and, once IoT data is connected, help interpret hive sensor patterns.</div></div>
+<div class="ai-foot"><input id="aiInput" onkeydown="if(event.key==='Enter') sendAIMessage()" placeholder="Ask HoneyTrace AI..." type="text"/><button onclick="sendAIMessage()">Send</button></div>
+</div>
+<script>
+async function toggleAIAssistant(){
+  const panel=document.getElementById("aiAssistantPanel");
+  if(!panel) return;
+  panel.style.display=panel.style.display==="block"?"none":"block";
+  if(panel.style.display==="block") document.getElementById("aiInput")?.focus();
+}
+
+function addAIMessage(text, role){
+  const box=document.getElementById("aiMessages");
+  const div=document.createElement("div");
+  div.className="ai-msg " + (role==="user"?"ai-user":"ai-bot");
+  div.textContent=text;
+  box.appendChild(div);
+  box.scrollTop=box.scrollHeight;
+}
+
+function askAISuggestion(text){
+  document.getElementById("aiInput").value=text;
+  sendAIMessage();
+}
+
+async function sendAIMessage(){
+  const input=document.getElementById("aiInput");
+  const status=document.getElementById("aiStatus");
+  const message=input.value.trim();
+  if(!message) return;
+  addAIMessage(message,"user");
+  input.value="";
+  status.textContent="Thinking...";
+
+  try{
+    const { data: { user } } = await window.honeyTraceDB.auth.getUser();
+    if(!user){
+      addAIMessage("Please login first so I can safely access your HoneyTrace data.","bot");
+      status.textContent="Login required";
+      return;
+    }
+
+    const { data: batches } = await window.honeyTraceDB
+      .from("honey_batches")
+      .select("batch_id,honey_type,quantity,harvest_date,origin,status,blockchain_hash,created_at")
+      .eq("user_id",user.id)
+      .order("created_at",{ascending:false})
+      .limit(10);
+
+    const { data: aiData, error } = await window.honeyTraceDB.functions.invoke("ai-assistant",{
+      body:{
+        message,
+        user_id:user.id,
+        batches:batches || []
+      }
+    });
+
+    if(error) throw error;
+    addAIMessage(aiData?.reply || aiData?.answer || "I couldn't generate a response.","bot");
+    status.textContent="Ready";
+  }catch(error){
+    console.error("AI assistant error",error);
+    addAIMessage("Gemini AI is temporarily unavailable. Check the Supabase Edge Function and GEMINI_API_KEY secret.","bot");
+    status.textContent="Backend setup required";
+  }
+}
+</script>
+<script>
+/* =====================================================
+   QR VERIFICATION
+===================================================== */
+
+async function checkVerification(){
+
+    const params = new URLSearchParams(window.location.search);
+    const batch = params.get("verify");
+
+    if(!batch || !window.honeyTraceDB) return;
+
+    document.getElementById("mainWebsite").style.display="none";
+    document.getElementById("verificationPage").style.display="block";
+
+    const { data, error } = await window.honeyTraceDB
+        .from("honey_batches")
+        .select("batch_id,honey_type,quantity,origin,harvest_date,status,blockchain_hash,user_id")
+        .eq("batch_id", batch)
+        .maybeSingle();
+
+    const statusEl = document.querySelector(".verify-status");
+
+    if(error || !data){
+        document.getElementById("verifyBatch").textContent = batch;
+        document.getElementById("verifyHoneyType").textContent = "Batch not found";
+        document.getElementById("verifyQuantity").textContent = "-";
+        document.getElementById("verifyOrigin").textContent = "-";
+        document.getElementById("verifyHarvest").textContent = "-";
+        if(statusEl) statusEl.textContent = "✗ Verification Failed";
+        return;
+    }
+
+    document.getElementById("verifyHoneyType").textContent = data.honey_type || "-";
+    document.getElementById("verifyBatch").textContent = data.batch_id || "-";
+    document.getElementById("verifyQuantity").textContent = data.quantity || "-";
+    document.getElementById("verifyOrigin").textContent = data.origin || "-";
+    document.getElementById("verifyHarvest").textContent = formatDateSafe(data.harvest_date);
+
+    const recordForHash = JSON.stringify({
+        batchID: data.batch_id,
+        user_id: data.user_id,
+        type: data.honey_type,
+        quantity: data.quantity,
+        harvest: data.harvest_date,
+        origin: data.origin
+    });
+
+    const hashBuffer = await crypto.subtle.digest(
+        "SHA-256",
+        new TextEncoder().encode(recordForHash)
+    );
+
+    const calculatedHash = Array.from(new Uint8Array(hashBuffer))
+        .map(b => b.toString(16).padStart(2,"0"))
+        .join("");
+
+    const verified = calculatedHash === data.blockchain_hash;
+
+    if(statusEl){
+        statusEl.textContent = verified ? "✓ Blockchain Verified" : "✗ TAMPER DETECTED";
+        statusEl.style.color = verified ? "#6ee7a0" : "#ff6b6b";
+    }
+
+    const hashElement = document.querySelector(".hash");
+    if(hashElement) hashElement.textContent = data.blockchain_hash || "-";
+
+    const verificationNote = document.getElementById("verificationResultNote");
+    if(verificationNote){
+        verificationNote.textContent = verified
+            ? "✓ Batch data matches the stored security hash."
+            : "✗ Batch data does not match the stored security hash. Possible tampering detected.";
+        verificationNote.style.color = verified ? "#6ee7a0" : "#ff6b6b";
+    }
+}
+
+function formatDateSafe(value){
+    if(!value) return "-";
+    const d = new Date(value + "T00:00:00");
+    return Number.isNaN(d.getTime()) ? value : d.toLocaleDateString("en-IN", {day:"2-digit",month:"long",year:"numeric"});
+}
+
+/* =====================================================
+   CLOSE VERIFICATION
+===================================================== */
+
+function closeVerification(){
+
+    document
+    .getElementById("verificationPage")
+    .style.display="none";
+
+    document
+    .getElementById("mainWebsite")
+    .style.display="block";
+
+}
+
+
+/* =====================================================
+   OUTSIDE MODAL CLICK
+===================================================== */
+
+window.onclick=function(event){
+
+    if(
+        event.target.classList
+        .contains("modal")
+    ){
+
+        event.target.style.display="none";
+
+    }
+
+}
+
+
+
+/* =====================================================
+   SUPABASE SESSION RESTORE
+===================================================== */
+
+async function restoreSupabaseSession(){
+
+    if(!window.honeyTraceDB) return;
+
+    const { data: { session } } =
+        await window.honeyTraceDB.auth.getSession();
+
+    if(!session) return;
+
+    if(session.user?.email && !session.user.email_confirmed_at){
+        await window.honeyTraceDB.auth.signOut();
+        return;
+    }
+
+    const { data: profile } =
+        await window.honeyTraceDB
+            .from("profiles")
+            .select("full_name, role")
+            .eq("user_id", session.user.id)
+            .maybeSingle();
+
+    if(profile){
+        const role = displayRoleFromDb(profile.role);
+
+        showUserDashboard(
+            role,
+            profile.full_name || session.user.email
+        );
+    }
+}
+
+/* =====================================================
+   CHECK QR URL
+===================================================== */
+
+checkVerification();
+restoreSupabaseSession();
+</script>
+</body>
+</html>
